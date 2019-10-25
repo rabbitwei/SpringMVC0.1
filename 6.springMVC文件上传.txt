@@ -1,0 +1,55 @@
+1. 使用 Spring MVC 文件上传前：
+    1. 需要添加 commons-fileupload-1.2.2.jar 和 commons-io-2.4.jar 两个 jar。
+
+2. Spring MVC 上传文件的步骤：
+    1. 修改 Spring MVC 配置文件， 配置Spring MVC 的文件上传解析器，表示支持上传功能：
+
+            <!-- 文件上传 -->
+            <bean id="multipartResolver"
+                  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+                <!-- 设置上传文件的最大尺寸为5MB -->
+                <property name="maxUploadSize">
+                    <value>5242880</value>
+                </property>
+            </bean>
+
+    2. 修改 web.xml 配置文件：
+        1. 因为我们配置 Spring MVC 的 DispatcherServlet 类是拦截所有的请求，也就是说静态的文件如 jpg, html 等都会被
+           spring mvc 的核心控制器给拦截。图片无法显示也是这个原因。
+
+        2. 两种解决方式：
+            1. 修改 DispatcherServlet 拦截的请求方式， 将拦截所有
+                    <url-pattern>/</url-pattern>
+               该为只拦截 *.do 的请求。
+                    <url-pattern>/*.do</url-pattern>
+
+            2. 添加配置，让静态文件能被访问到（注意：必须加在spring mvc的servlet之前）
+                    <servlet-mapping>
+                        <servlet-name>default</servlet-name>
+                        <url-pattern>*.jpg</url-pattern>
+                    </servlet-mapping>
+               第二种方式有些局限性。推荐第一种。
+
+    3. 编写前端上传的页面，注意以下几点就行了：
+        1. form 表单的两个属性必须提供， method="post" 和 enctype="multipart/form-data" 缺一不可
+        2. 上传组件 增加一个属性 accept="image/*" 表示只能选择图片进行上传， 可以修改为其他类型。
+        3. <input type="file" name="image" accept="image/*" /> 中的 name 一定要和 后台接收的 一样。
+           也就是说，前端传递的参数名必须要和后端接收的要保持一致，否则报空异常。
+
+    4. 编写一个上传文件的 Bean(为什么：因为 MultipartFile类型不能直接在方法参数中使用,会报 BeanInstantiationException 异常)：
+       该 bean 主要是封装 MultipartFile 类型的字段 image（需要和前端的name 属性值一致） ，用于接受页面的注入。
+       提供 setter 和 getter 方法
+
+    5. 上传控制器编写：
+        0. 第一个参数是 HttpServletRequest 对象，用于获取路径的
+        1. 方法的第二个参数UploadedImageFile(封装了 MultipartFile字段的bean) 中已经注入好了 image
+        2. 通过 RandomStringUtils.randomAlphanumeric(10);获取一个随机文件名，用来创建文件对象。
+           因为用户可能上传相同文件名的文件，为了不覆盖原来的文件，通过随机文件名的办法来规避
+        3. 根据request.getServletContext().getRealPath 获取到web目录下的image目录，用于存放上传后的文件。
+           也可以存放在项目之外的路径。
+        4. 调用file.getImage().transferTo(newFile); 复制文件，保存一份到本地
+        5. 把生成的随机文件名提交给视图，用于后续的显示
+
+    6. 视图显示：
+        通过 el 表达式获取后台给的文件名就行了。如果无法显示查看是否被拦截了所有的请求，或者url 写错了
+        url 写成 image/${fileName}. 表示访问 web 目录下的 image 目录

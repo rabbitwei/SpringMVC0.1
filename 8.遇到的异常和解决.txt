@@ -1,0 +1,13 @@
+1. 遇到文件上传的时候， 数组越界：
+    原因： 可能 Spring mvc 库的版本有问题。
+    解决： idea 中项目语言级别从 jdk11 降为 jdk8就可以解决了。
+
+
+2. BeanInstantiationException：
+    原因： 方法参数直接使用 MultipartFile 接口类型
+    解决： 将 MultipartFile 接口类型封装成 bean，提供 MultipartFile类型的字段就行了
+        注意：字段名需要和前端上传的 name 属性值 一样。
+
+3. 报空异常：
+    原因： 前端的 input 组件中的 name 属性值和 后端接收的该值的变量名没有相同
+    解决： 后端的字段名使用和前端传递过来的参数名相同就行了

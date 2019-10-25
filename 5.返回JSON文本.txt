@@ -1,0 +1,27 @@
+1. SpringMVC 返回 JSON 文本的步骤：
+
+    1. 导入两个JSON开发包 jackson-core-asl-1.9.11.jar 和 jackson-mapper-asl-1.9.11.jar
+
+    2. 在要返回JSON的业务方法上给上 @ResponseBody 注解：
+
+        //在业务方法的返回值和权限之间使用@ResponseBody注解表示返回值对象需要转成JSON文本
+        @RequestMapping("/getUser")
+        public
+        @ResponseBody
+        User getUser() {
+            User user = new User();
+            user.setId(1);
+            user.setName("admin");
+            user.setPassword("admin");
+            return user;
+        }
+
+    3. 在 Spring mvc 配置文件中配置JSON适配器：
+
+            <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+                <property name="messageConverters">
+                        <list>
+                            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+                        </list>
+                </property>
+            </bean>

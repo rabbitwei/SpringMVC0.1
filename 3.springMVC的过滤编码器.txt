@@ -1,0 +1,29 @@
+1. 在SpringMVC的控制器中，如果没有对编码进行任何的操作，那么获取到的中文数据是乱码！
+
+   即使我们在 handle() 方法中，使用request对象设置编码也不行！
+
+   原因也非常简单，我们SpringMVC接收参数是通过控制器中的无参构造方法，
+                  再经过handle()方法的object对象来得到具体的参数类型的。
+
+   也就是说，在 handle() 方法前，中文数据就已经是乱码的了，即使进行编码都是无效的。
+
+
+2. 使用 SpringMVC 的过滤编码器：
+    注意的是：该过滤编码器只能解决POST的乱码问题！
+
+       <!-- 编码过滤器 -->
+        <filter>
+            <filter-name>CharacterEncodingFilter</filter-name>
+            <filter-class>
+                org.springframework.web.filter.CharacterEncodingFilter
+            </filter-class>
+            <!--需要指定参数-->
+            <init-param>
+                <param-name>encoding</param-name>
+                <param-value>UTF-8</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>CharacterEncodingFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>

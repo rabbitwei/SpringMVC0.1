@@ -1,0 +1,42 @@
+1. 如果需要使用逻辑路径的话，就一定需要配置视图解析器
+
+2. 使用注解前，需要开启注解扫描：
+    <!--值得注意的是：在配置扫描路径的时候，后面不要加.*-->
+    <context:component-scan base-package="controller"/>
+
+3. 使用到的注解有：
+    1. @Controller:
+        在类前面加,表示该类是一个控制器,和 @Component 一样 ，都是将类添加到 IOC 容器
+        注意：有了 @Controller 注解后，不需要再继承 Controller 接口了。
+
+    2. @RequestMapping：
+        在方法前面加， @RequestMapping("/index")表示访问路径 /index 会映射到该方法上，
+        还能够限制该请求方法是GET还是POST。
+
+        在类前面加，就代表了分模块，url 也会发生变化,不需要分模块不建议使用
+
+    3. @RestController:
+        @ResponseBody 和 @Controller 注解的结合：返回json数据
+
+    4. @ResponseBody:
+        在访问修饰符和方法名之间， 将java对象转成json数据
+
+    5. @RequestBody:
+        在方法的参数类型前，将请求的json数据转成java对象
+
+    6. @RequestParam：
+        在参数类型前使用。 在前端传递的参数名与后端的 bean 的属性名不相同的时候用
+
+        如：public String editItem(@RequestParam(value="item_id",required=true) String id)
+        前端传递过来的是名称是 item_id， 而我们可以转换成名为 id
+
+
+4. 基于注解和基于XML来开发SpringMVC，都是通过映射器、适配器和视图解析器的。  只是映射器、适配器略有不同。但是都是可以省略的！
+
+    映射器：
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+
+    适配器：
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+
+    当然了，这上面两个配置也可以使用<mvc:annotation-driven>>替代注解处理器和适配器的配置。
