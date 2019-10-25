@@ -1,0 +1,38 @@
+1. Dispatcher(核心控制器):
+    拦截指定的请求，然后将请求交给其他的组件处理。
+
+
+2. HandlerMapping(映射器)：
+    映射器就是用于处理“什么样的请求提交给Action”处理。【默认可省略的】
+
+3. HandlerAdapter(适配器)：
+    当我们映射器找到对应的Action来处理请求的时候，核心控制器会让适配器去找该类是否实现了Controller接口。【默认可省略的】
+    也就是说：适配器就是去找实现了Controller接口的类
+
+
+4. ViewResolver(视图解析器)：
+    我们把结果封装到ModelAndView以后，SpringMVC会使用视图解析器来对ModelAndView进行解析。【默认可省略的】
+
+    也有一种情况是不能省略的。默认可以省略是因为：将结果封装到ModelAndView后，用的是绝对真实路径！
+    如果我们用的是逻辑路径，那么就必须对其配置，否则SpringMVC是找不到对应的路径的。
+
+    那什么是逻辑路径呢：逻辑路径就是配置了视图解析器之后 url 的简写，比如原本是 hello.jsp， 配置之后就可以写成
+                      hello，这种就叫做逻辑路径。
+
+5.控制器：
+    1. ParameterizableViewController：
+
+        在SpringMVC中，如果仅仅是跳转到某个视图上，我们可以省略该Action和业务方法。
+        配置的Action只要继承着ParameterizableViewController这个类就行了！
+
+            <!-- 专用于jsp到jsp/html的转发控制器 -->
+            <bean name="/ok.action" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+                <!-- 转发到真实视图名 -->
+                <property name="viewName" value="/WEB-INF/ok.jsp"/>
+            </bean>
+        但是，还是些 Action 和 业务方法比较好，方便统一管理
+
+    2. AbstractCommandController(不推荐使用了)：
+
+        SpringMVC中获取参数可以是将Action继承AbstractCommandController这么一个类的。
+        不过一般都不需要了，现在都是直接在业务方法指定 Model 来接收前端提交的参数了。

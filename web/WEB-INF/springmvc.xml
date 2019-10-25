@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <!--映射器默认的值是这样的：-->
+    <!--<bean id="simpleUrlHandlerMapping"-->
+          <!-- 注册映射器(handler包)(框架)【可省略】 -->
+          <!--class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
+        <!--<property name="mappings">-->
+            <!--<props>-->
+                <!--<prop key="/index">indexController</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="indexController" class="controller.HelloController" />-->
+
+    <!-- 适配器【可省略】 -->
+    <!--<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>-->
+
+    <!--使用逻辑路径，视图解析器不能省略-->
+    <!--
+        如果Action中书写的是视图逻辑名称，那么视图解析器就必须配置
+        如果Action中书写的是视图真实名称，那么视图解析器就可选配置
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 路径前缀 -->
+        <property name="prefix" value="/jsp/" />
+        <!-- 路径后缀 -->
+        <property name="suffix" value=".jsp"/>
+        <!-- 前缀+视图逻辑名+后缀=真实路径 -->
+    </bean>
+
+
+
+
+    <!--
+      注册控制器: 一般使用下面的的配置，这种也是 xml 配置的方式。
+      name属性的值表示的是请求的路径【也就是说，当用户请求到/index时，就交由 HelloAction 类进行处理】
+      注意 要全名
+  -->
+    <bean class="controller.HelloController" name="/index"/>
+
+
+</beans>

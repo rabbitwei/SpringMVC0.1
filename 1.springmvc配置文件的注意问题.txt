@@ -1,0 +1,31 @@
+1. 当访问 spring mvc的时候， 报 DispatcherServlet 类没有时，我是通过创建新的项目来解决的，
+
+    可能的问题是：
+        1. 编译的时候有问题，删除 classes 文件重新编译
+        2. 可能 sping mvc 的配置文件错误的（比如命名，文件创建的位置）
+
+2. spring mvc 配置文件可以创建在两处不同的地方，但是每个不同的地方都会导致 web.xml 的配置不同：
+    1. 放在 src 目录下：
+        我们需要通过,如下代码来加载配置文件， 否则无法读取到配置文件
+            <init-param>
+                        <param-name>contextConfigLocation</param-name>
+                        <param-value>classpath:springmvc.xml</param-value>
+            </init-param>
+        注意： 如果是放在 src 目录下的话， DispatcherServlet 类的 filter 映射名就可以自定义了。
+
+    2. 放在 WEB-INF 目录下：
+        我们需要通过： DispatcherServlet 类 的 filter 的 filter-name 来加载 spring mvc 的配置文件。
+        什么意思呢？
+            也就是，在 WEB-INF 目录下的 spring mvc 配置文件名一定是 servlet-name 标签的值 和 -servlet.xml 组合一起。
+            比如，现在的值是 springmvc, 那么 配置文件名一定是 springmvc-servlet.xml。
+            如果不是这个的话， 无法加载配置文件。
+
+            <servlet>
+                    <servlet-name>springmvc</servlet-name>
+                    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+                    <load-on-startup>1</load-on-startup>
+            </servlet>
+
+3. 在配置 DispatchServlet 的映射的时候， 最好加上如下配置：
+              <load-on-startup>1</load-on-startup>
+   表示第一个启动的 filter。
