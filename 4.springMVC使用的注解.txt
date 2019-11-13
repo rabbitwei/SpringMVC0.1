@@ -1,8 +1,13 @@
 1. 如果需要使用逻辑路径的话，就一定需要配置视图解析器
 
-2. 使用注解前，需要开启注解扫描：
+2. 使用注解前，需要开启注解扫描,将控制器纳入Spring管理：
+    <!--扫描已注册的bean-->
+    <mvc:annotation-driven />
     <!--值得注意的是：在配置扫描路径的时候，后面不要加.*-->
-    <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="cn.rabbit.controller">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
 3. 使用到的注解有：
     1. @Controller:
